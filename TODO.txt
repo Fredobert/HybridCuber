@@ -1,17 +1,19 @@
 Easy
 
--
--
--
+- Texture for Cubes
+- Texture for Player
+- No more endless jumping
+
 
 Medium
 
--
--
--
+- Double Jump
+- Dash
+- 
+
 
 Difficult
 
--
--
--
+- Animation X/Y swaping
+- 2D / 3D world
+- 
