@@ -11,11 +11,14 @@ public class Player : MonoBehaviour {
     public bool isLookingForward = true;
     public Transform nearestTile;
     public Rigidbody rb;
-
+    public Vector3 pos3d;
     public CameraHandler ch;
+    [SerializeField] private Transform groundPoint;         // point at the botton of the character
+    [SerializeField] private LayerMask whatIsGround;        // determine what is "ground"
+    private float groundRadius = 0.25f;                      // area around groundPoint, to check collision with objects
+    private bool doubleJump = false;
 
-
-	void Start () {
+    void Start () {
         EventManager.OnModeChange += ModeChange;
         ch.SwitchCamera(true);
         ch.RotateCamera(true);
@@ -71,13 +74,35 @@ public class Player : MonoBehaviour {
         }
         else if (Input.GetKeyDown("space")) //jump
         {
-            rb.AddForce(Vector3.up * jump, ForceMode.Impulse);
-            isGrounded = false;
+            if (isOnGround() || doubleJump)
+            {
+                if (!isOnGround())
+                    doubleJump = false;
+                else
+                    doubleJump = true;
+                rb.AddForce(Vector3.up * jump, ForceMode.Impulse);
+            }
         }
-
+        if (rb.velocity.y < 0)
+        {
+            
+            rb.velocity += Vector3.up * Time.deltaTime * (-5.0f);                                                    //-5 as a test value, alternativ: Physics.gravity.y (equals -9.81)
+        }
     }
 
-    public Vector3 pos3d;
+    private bool isOnGround()
+    {
+            Collider[] colliders = Physics.OverlapSphere(groundPoint.position, groundRadius, whatIsGround);          //effizienter: colliders.length > 1 && colliders[i].gameObject != gameObject
+            
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i].gameObject != gameObject)                                                           //check if colliders game Object is different from the player
+                {
+                    return true;
+                }
+            }
+        return false;
+    }
     public void ModeChange(bool mode2d, bool xAxis)
     {
         if (mode2d)
