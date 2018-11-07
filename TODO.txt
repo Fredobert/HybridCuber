@@ -9,11 +9,11 @@ Medium
 
 - Double Jump
 - Dash
-- 
-
+- Player Death if falling to much 
+- Player Death if inside Cubes when Switching
 
 Difficult
 
 - Animation X/Y swaping
-- 2D / 3D world
+- 2D / 3D world 	
 - 

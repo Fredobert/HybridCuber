@@ -6,7 +6,9 @@ public class SimpleCamera : MonoBehaviour {
 
     public Transform target;
     public Camera cam;
-    public Vector3 offset;
+    public Vector3 offsetHorizontal;
+    public Vector3 offsetVertical;
+    public bool horizontal = true;
 
 	// Use this for initialization
 	void Start () {
@@ -15,6 +17,9 @@ public class SimpleCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        transform.position = target.position + offset;
+        transform.position = target.position + ((horizontal)? offsetHorizontal : offsetVertical);
 	}
+
+
+
 }

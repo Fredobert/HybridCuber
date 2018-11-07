@@ -5,29 +5,31 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
     public bool xModus = true;
+    public bool Modus3d = true;
     public float jump = 10.0f;
     public bool isGrounded = false;
     public bool isLookingForward = true;
     public Transform nearestTile;
     public Rigidbody rb;
 
-
-    public Camera camX;
-    public Camera camZ;
+    public CameraHandler ch;
 
 
-	// Use this for initialization
 	void Start () {
-        camZ.enabled = false;
-        camX.enabled = true;
+        EventManager.OnModeChange += ModeChange;
+        ch.SwitchCamera(true);
+        ch.RotateCamera(true);
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
         xModus = true;
+        Modus3d = true;
     }
 	
-	// Update is called once per frame
+
 	void Update () {
-        //
+
+        //Move
         float direction = Input.GetAxis("Horizontal");
+        //Change direction if moving in the other direction
         if (direction  > 0 && !isLookingForward )
         {
             isLookingForward = true;
@@ -37,26 +39,64 @@ public class Player : MonoBehaviour {
             isLookingForward = false;
             transform.Rotate(0f, 180.0f, 0f);
         }
-
         var z = Mathf.Abs(direction) * Time.deltaTime * 3.0f;
         transform.Translate(0, 0, z);
-        if (Input.GetKeyDown("x"))
+
+
+        if (Input.GetKeyDown("x")) //Switch between 3d and 2d
         {
-            if (xModus)
+            if (!Modus3d)  
             {
-                ChangeToZ();
+                ch.SwitchCamera(true);
+                EventManager.OnModeChangeAction(false, !xModus);
+                Modus3d = true;
             }
             else
             {
+                ch.SwitchCamera(false);
+                EventManager.OnModeChangeAction(true, !xModus);
+                Modus3d = false;
+            }
+        }
+        else if (Input.GetKeyDown("c")) //change perspective
+        {  
+            if (!xModus)
+            {
                 ChangeToX();
             }
-        }else if (Input.GetKeyDown("space"))
+            else
+            {
+                ChangeToZ();
+            }
+        }
+        else if (Input.GetKeyDown("space")) //jump
         {
-            rb.AddForce(Vector3.up * jump,ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jump, ForceMode.Impulse);
             isGrounded = false;
         }
 
     }
+
+    public Vector3 pos3d;
+    public void ModeChange(bool mode2d, bool xAxis)
+    {
+        if (mode2d)
+        {
+            if (xAxis)
+            {
+                transform.position = new Vector3(0, transform.position.y, transform.position.z);
+            }
+            else
+            {
+                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+            }
+        }
+        else
+        {
+            transform.position = new Vector3(pos3d.x, transform.position.y, pos3d.z);
+        }
+    }
+
 
     private void OnCollisionStay(Collision collision)
     {
@@ -80,6 +120,11 @@ public class Player : MonoBehaviour {
         if (oldD > newD)
         {
             nearestTile = collision.gameObject.transform;
+            HybridObject ho = collision.gameObject.GetComponent<HybridObject>();
+            if (ho != null)
+            {
+                pos3d = ho.pos3d;
+            }
         }
     }
 
@@ -89,9 +134,8 @@ public class Player : MonoBehaviour {
         {
             return;
         }
+        ch.RotateCamera(true);
         transform.Rotate(0,-90,0);
-        camZ.enabled = false;
-        camX.enabled = true;
         transform.position = new Vector3(nearestTile.position.x, transform.position.y, transform.position.z);
         rb.constraints =  RigidbodyConstraints.FreezeRotation;
         xModus = true;
@@ -102,9 +146,8 @@ public class Player : MonoBehaviour {
         {
             return;
         }
+        ch.RotateCamera(false);
         transform.Rotate(0, 90, 0);
-        camX.enabled = false;
-        camZ.enabled = true;
         transform.position = new Vector3(nearestTile.position.x, transform.position.y, transform.position.z);
         rb.constraints =  RigidbodyConstraints.FreezeRotation;
         xModus = false;
