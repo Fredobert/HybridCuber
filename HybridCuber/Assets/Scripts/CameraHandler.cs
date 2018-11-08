@@ -9,7 +9,11 @@ public class CameraHandler : MonoBehaviour {
 
     public SimpleCamera acvtive;
 
-    private bool ishorizontal;
+    void Start()
+    {
+        EventManager.OnDimensionChange += SwitchCamera;
+    }
+
 
     public void SwitchCamera(bool camera3d)
     {
@@ -24,21 +28,6 @@ public class CameraHandler : MonoBehaviour {
             cam2d.cam.enabled = true;
             cam3d.cam.enabled = false;
             acvtive = cam2d;
-        }
-        RotateCamera(ishorizontal);
-    }
-
-    public void RotateCamera(bool horizontal)
-    {
-        ishorizontal = horizontal;
-        acvtive.horizontal = horizontal;
-        if (horizontal)
-        {
-            acvtive.transform.eulerAngles = new Vector3(0, 0, 0);
-        }
-        else
-        {
-            acvtive.transform.eulerAngles = new Vector3(0, 90, 0);
         }
     }
 }

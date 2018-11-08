@@ -4,14 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    public bool xModus = true;
-    public bool Modus3d = true;
     public float jump = 10.0f;
     public bool isGrounded = false;
     public bool isLookingForward = true;
     public Transform nearestTile;
     public Rigidbody rb;
-    public Vector3 pos3d;
     public CameraHandler ch;
     [SerializeField] private Transform groundPoint;         // point at the botton of the character
     [SerializeField] private LayerMask whatIsGround;        // determine what is "ground"
@@ -19,17 +16,14 @@ public class Player : MonoBehaviour {
     private bool doubleJump = false;
 
     void Start () {
-        EventManager.OnModeChange += ModeChange;
         ch.SwitchCamera(true);
-        ch.RotateCamera(true);
+        EventManager.OnPerspectiveChange += ChangePerspective;
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-        xModus = true;
-        Modus3d = true;
     }
 	
 
 	void Update () {
-
+   
         //Move
         float direction = Input.GetAxis("Horizontal");
         //Change direction if moving in the other direction
@@ -48,35 +42,22 @@ public class Player : MonoBehaviour {
 
         if (Input.GetKeyDown("x")) //Switch between 3d and 2d
         {
-            if (!Modus3d)  
-            {
-                ch.SwitchCamera(true);
-                EventManager.OnModeChangeAction(false, !xModus);
-                Modus3d = true;
-            }
-            else
-            {
-                ch.SwitchCamera(false);
-                EventManager.OnModeChangeAction(true, !xModus);
-                Modus3d = false;
-            }
+            EventManager.DimensionChange(!EventManager.Dimension);
         }
         else if (Input.GetKeyDown("c")) //change perspective
-        {  
-            if (!xModus)
-            {
-                ChangeToX();
-            }
-            else
-            {
-                ChangeToZ();
-            }
+        {
+            EventManager.PerspectiveChange(!EventManager.Perspective);
+        }
+        else if (Input.GetKeyDown("p"))
+        {
+            //For Debug
+            EventManager.SquishDimension(0.1f);
         }
         else if (Input.GetKeyDown("space")) //jump
         {
-            if (isOnGround() || doubleJump)
+            if (IsOnGround() || doubleJump)
             {
-                if (!isOnGround())
+                if (!IsOnGround())
                     doubleJump = false;
                 else
                     doubleJump = true;
@@ -85,12 +66,11 @@ public class Player : MonoBehaviour {
         }
         if (rb.velocity.y < 0)
         {
-            
             rb.velocity += Vector3.up * Time.deltaTime * (-5.0f);                                                    //-5 as a test value, alternativ: Physics.gravity.y (equals -9.81)
         }
     }
 
-    private bool isOnGround()
+    private bool IsOnGround()
     {
             Collider[] colliders = Physics.OverlapSphere(groundPoint.position, groundRadius, whatIsGround);          //effizienter: colliders.length > 1 && colliders[i].gameObject != gameObject
             
@@ -103,24 +83,7 @@ public class Player : MonoBehaviour {
             }
         return false;
     }
-    public void ModeChange(bool mode2d, bool xAxis)
-    {
-        if (mode2d)
-        {
-            if (xAxis)
-            {
-                transform.position = new Vector3(0, transform.position.y, transform.position.z);
-            }
-            else
-            {
-                transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-            }
-        }
-        else
-        {
-            transform.position = new Vector3(pos3d.x, transform.position.y, pos3d.z);
-        }
-    }
+   
 
 
     private void OnCollisionStay(Collision collision)
@@ -148,33 +111,18 @@ public class Player : MonoBehaviour {
             HybridObject ho = collision.gameObject.GetComponent<HybridObject>();
             if (ho != null)
             {
-                pos3d = ho.pos3d;
+                
+                Vector3 pos3d = ho.pos3d;
+                pos3d.y = transform.position.y;
+                GetComponent<HybridObject>().UpdatePos(pos3d);
+
             }
         }
     }
 
-    public void ChangeToX()
+    public void ChangePerspective(bool perspective)
     {
-        if (xModus)
-        {
-            return;
-        }
-        ch.RotateCamera(true);
-        transform.Rotate(0,-90,0);
+        transform.Rotate(0, (!perspective)? 90: -90 , 0);
         transform.position = new Vector3(nearestTile.position.x, transform.position.y, transform.position.z);
-        rb.constraints =  RigidbodyConstraints.FreezeRotation;
-        xModus = true;
-    }
-    public void ChangeToZ()
-    {
-        if (!xModus)
-        {
-            return;
-        }
-        ch.RotateCamera(false);
-        transform.Rotate(0, 90, 0);
-        transform.position = new Vector3(nearestTile.position.x, transform.position.y, transform.position.z);
-        rb.constraints =  RigidbodyConstraints.FreezeRotation;
-        xModus = false;
     }
 }

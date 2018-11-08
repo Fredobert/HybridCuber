@@ -3,15 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EventManager : MonoBehaviour {
+    private static bool perspective = true;
+    /// <summary>
+    /// True if xAxis, false if zAxis
+    /// </summary>
+    public static bool Perspective { get { return perspective; } }
 
-    public delegate void ModeChange(bool mode2D, bool xAxis);
-    public static event ModeChange OnModeChange;
+    public delegate void PerspectiveChangeAction(bool xAxis);
+    public static event PerspectiveChangeAction OnPerspectiveChange;
 
-    public static void OnModeChangeAction(bool mode2d, bool xAxis)
+    public static void PerspectiveChange(bool xAxis)
     {
-        if (OnModeChange != null)
+        perspective = xAxis;
+        if (OnPerspectiveChange != null)
         {
-            OnModeChange(mode2d, xAxis);
+            OnPerspectiveChange(xAxis);
+        }
+    }
+
+
+    private static bool dimension = true;
+    /// <summary>
+    /// True if 3D, false if 2D
+    /// </summary>
+    public static bool Dimension { get { return dimension; } }
+
+    public delegate void DimensionChangeAction(bool xAxis);
+    public static event DimensionChangeAction OnDimensionChange;
+    public static void DimensionChange(bool dim3d)
+    {
+        dimension = dim3d;
+        if (OnDimensionChange != null)
+        {
+            OnDimensionChange(dim3d);
+        }
+    }
+
+
+    public delegate void SquishDimensionAction(float squish);
+    public static event SquishDimensionAction OnSquishDimension;
+    public static void SquishDimension(float squish)
+    {
+        if (OnSquishDimension != null)
+        {
+            OnSquishDimension(squish);
         }
     }
 
