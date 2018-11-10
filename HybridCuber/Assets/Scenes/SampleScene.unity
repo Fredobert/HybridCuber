@@ -329,7 +329,7 @@ Prefab:
     - target: {fileID: 114164143912498720, guid: 7403646e82fd2194697a92f85feef2b2,
         type: 2}
       propertyPath: jump
-      value: 4
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 4896435540996802, guid: 7403646e82fd2194697a92f85feef2b2, type: 2}
       propertyPath: m_LocalEulerAnglesHint.y

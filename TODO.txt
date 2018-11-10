@@ -3,6 +3,7 @@ Easy
 - Texture for Cubes
 - Texture for Player
 - Pause Menu
+- Interface für Steuerung
 
 Medium
 
@@ -20,5 +21,4 @@ Difficult
 
 
 Bug Fixes:
-- Glitching into objects
 - Sometimes the character gets teleported back (swapping dimensions)

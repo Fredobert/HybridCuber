@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    public float jump = 10.0f;
+    public float jump = 4.5f;
     public bool isGrounded = false;
     public bool isLookingForward = true;
     public Transform nearestTile;
     public Rigidbody rb;
     public CameraHandler ch;
+    public float movementSpeed = 7.0f;
     [SerializeField] private Transform groundPoint;         // point at the botton of the character
     [SerializeField] private LayerMask whatIsGround;        // determine what is "ground"
-    private float groundRadius = 0.25f;                      // area around groundPoint, to check collision with objects
+    private float groundRadius = 0.25f;    // area around groundPoint, to check collision with objects
     private bool doubleJump = false;
 
     void Start () {
@@ -36,9 +37,10 @@ public class Player : MonoBehaviour {
             isLookingForward = false;
             transform.Rotate(0f, 180.0f, 0f);
         }
-        var z = Mathf.Abs(direction) * Time.deltaTime * 3.0f;
-        transform.Translate(0, 0, z);
+        //var z = Mathf.Abs(direction) * Time.deltaTime * 3.0f;
+        //transform.Translate(0, 0, z);
 
+        rb.MovePosition(new Vector3((transform.position.x + direction * movementSpeed * Time.deltaTime), transform.position.y, transform.position.z));
 
         if (Input.GetKeyDown("x")) //Switch between 3d and 2d
         {
