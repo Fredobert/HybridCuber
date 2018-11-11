@@ -26,20 +26,6 @@ public class Player : MonoBehaviour {
     void Update() {
         //Move
         float direction = Input.GetAxis("Horizontal");
-        /*
-        //Change direction if moving in the other direction
-        if (direction > 0 && !isLookingForward)
-        {
-            isLookingForward = true;
-            transform.Rotate(0f, 180.0f, 0f);
-        } else if (direction < 0 && isLookingForward)
-        {
-            isLookingForward = false;
-            transform.Rotate(0f, 180.0f, 0f);
-        }
-        var z = Mathf.Abs(direction) * Time.deltaTime * 3.0f;
-        transform.Translate(0, 0, z);
-        */
         if (EventManager.Perspective)
             rb.MovePosition(new Vector3(transform.position.x + direction * movementSpeed * Time.deltaTime, transform.position.y, transform.position.z));
         else
@@ -51,7 +37,6 @@ public class Player : MonoBehaviour {
             if (!a.IsPlaying())
             {
                 EventManager.DimensionChange(!EventManager.Dimension);
-
             }
         }
         else if (Input.GetKeyDown("c")) //change perspective
@@ -76,6 +61,7 @@ public class Player : MonoBehaviour {
         {
             rb.velocity += Vector3.up * Time.deltaTime * (-5.0f);                                                    //-5 as a test value, alternativ: Physics.gravity.y (equals -9.81)
         }
+        playerDeath();
     }
 
     private bool IsOnGround()
@@ -91,7 +77,14 @@ public class Player : MonoBehaviour {
             }
         return false;
     }
-   
+    private void playerDeath ()     // if the Player is below a fixed Y value, he respawns
+    {
+        if (transform.position.y < -5)
+        {
+            rb.MovePosition(new Vector3(0, 5.0f, 0));
+            rb.velocity.Set(0, 0, 0);
+        }
+    }
 
 
     private void OnCollisionStay(Collision collision)

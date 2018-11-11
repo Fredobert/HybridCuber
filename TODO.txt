@@ -22,3 +22,4 @@ Difficult
 
 Bug Fixes:
 - Sometimes the character gets teleported back (swapping dimensions)
+- Double Jump doenst work properly if player velocity <0
