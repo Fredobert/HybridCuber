@@ -462,23 +462,8 @@ Prefab:
       objectReference: {fileID: 818823061}
     - target: {fileID: 23036393226786470, guid: 7403646e82fd2194697a92f85feef2b2,
         type: 2}
-      propertyPath: m_ReceiveShadows
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
-        type: 2}
-      propertyPath: m_UseGravity
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
-        type: 2}
-      propertyPath: m_IsKinematic
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
-        type: 2}
-      propertyPath: m_Interpolate
-      value: 0
+      propertyPath: 
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
         type: 2}

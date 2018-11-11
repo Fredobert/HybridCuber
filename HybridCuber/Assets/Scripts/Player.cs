@@ -123,6 +123,8 @@ public class Player : MonoBehaviour {
 
     public void ChangePerspective(bool perspective)
     {
+
+        rb.constraints = ((perspective) ?RigidbodyConstraints.FreezePositionZ : RigidbodyConstraints.FreezePositionX) | RigidbodyConstraints.FreezeRotation;
         transform.Rotate(0, (!perspective)? 90: -90 , 0);
         transform.position = new Vector3(nearestTile.position.x, transform.position.y, transform.position.z);
     }
