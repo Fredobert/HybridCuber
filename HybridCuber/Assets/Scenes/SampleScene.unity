@@ -384,11 +384,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4896435540996802, guid: 7403646e82fd2194697a92f85feef2b2, type: 2}
       propertyPath: m_LocalScale.x
-      value: 0.30000016
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4896435540996802, guid: 7403646e82fd2194697a92f85feef2b2, type: 2}
       propertyPath: m_LocalScale.z
-      value: 0.30000016
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 23036393226786470, guid: 7403646e82fd2194697a92f85feef2b2,
         type: 2}
@@ -460,6 +460,31 @@ Prefab:
       propertyPath: a
       value: 
       objectReference: {fileID: 818823061}
+    - target: {fileID: 23036393226786470, guid: 7403646e82fd2194697a92f85feef2b2,
+        type: 2}
+      propertyPath: m_ReceiveShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
+        type: 2}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
+        type: 2}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
+        type: 2}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 54367207075776098, guid: 7403646e82fd2194697a92f85feef2b2,
+        type: 2}
+      propertyPath: m_Constraints
+      value: 112
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7403646e82fd2194697a92f85feef2b2, type: 2}
   m_IsPrefabAsset: 0
@@ -1682,7 +1707,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.22, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &692547173

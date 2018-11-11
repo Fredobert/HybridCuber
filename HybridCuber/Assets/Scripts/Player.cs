@@ -14,19 +14,19 @@ public class Player : MonoBehaviour {
     public float movementSpeed = 7.0f;
     [SerializeField] private Transform groundPoint;         // point at the botton of the character
     [SerializeField] private LayerMask whatIsGround;        // determine what is "ground"
-    private float groundRadius = 0.25f;    // area around groundPoint, to check collision with objects
-    private bool doubleJump = false;
+    private float groundRadius = 0.25f;                     // area around groundPoint, to check collision with objects
+    private bool doubleJump = false;  
 
     void Start () {
         ch.SwitchCamera(true);
         EventManager.OnPerspectiveChange += ChangePerspective;
-        rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
     }
 
 
     void Update() {
         //Move
         float direction = Input.GetAxis("Horizontal");
+        /*
         //Change direction if moving in the other direction
         if (direction > 0 && !isLookingForward)
         {
@@ -37,16 +37,21 @@ public class Player : MonoBehaviour {
             isLookingForward = false;
             transform.Rotate(0f, 180.0f, 0f);
         }
-        //var z = Mathf.Abs(direction) * Time.deltaTime * 3.0f;
-        //transform.Translate(0, 0, z);
-
-        rb.MovePosition(new Vector3((transform.position.x + direction * movementSpeed * Time.deltaTime), transform.position.y, transform.position.z));
-
+        var z = Mathf.Abs(direction) * Time.deltaTime * 3.0f;
+        transform.Translate(0, 0, z);
+        */
+        if (EventManager.Perspective)
+            rb.MovePosition(new Vector3(transform.position.x + direction * movementSpeed * Time.deltaTime, transform.position.y, transform.position.z));
+        else
+        {
+            rb.MovePosition(new Vector3(transform.position.x, transform.position.y, transform.position.z + direction * movementSpeed * Time.deltaTime * (-1.0f)));
+        }
         if (Input.GetKeyDown("x")) //Switch between 3d and 2d
         {
             if (!a.IsPlaying())
             {
                 EventManager.DimensionChange(!EventManager.Dimension);
+
             }
         }
         else if (Input.GetKeyDown("c")) //change perspective
