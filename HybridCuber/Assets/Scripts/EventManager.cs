@@ -40,13 +40,13 @@ public class EventManager : MonoBehaviour {
     }
 
 
-    public delegate void SquishDimensionAction(float squish);
+    public delegate void SquishDimensionAction(bool mode3d);
     public static event SquishDimensionAction OnSquishDimension;
-    public static void SquishDimension(float squish)
+    public static void SquishDimension(bool mode3d)
     {
         if (OnSquishDimension != null)
         {
-            OnSquishDimension(squish);
+            OnSquishDimension(mode3d);
         }
     }
 

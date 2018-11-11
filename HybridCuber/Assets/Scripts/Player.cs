@@ -10,6 +10,8 @@ public class Player : MonoBehaviour {
     public Transform nearestTile;
     public Rigidbody rb;
     public CameraHandler ch;
+  
+    public AnimatorHelper a;
     [SerializeField] private Transform groundPoint;         // point at the botton of the character
     [SerializeField] private LayerMask whatIsGround;        // determine what is "ground"
     private float groundRadius = 0.25f;                      // area around groundPoint, to check collision with objects
@@ -20,18 +22,17 @@ public class Player : MonoBehaviour {
         EventManager.OnPerspectiveChange += ChangePerspective;
         rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
     }
-	
 
-	void Update () {
-   
+
+    void Update() {
         //Move
         float direction = Input.GetAxis("Horizontal");
         //Change direction if moving in the other direction
-        if (direction  > 0 && !isLookingForward )
+        if (direction > 0 && !isLookingForward)
         {
             isLookingForward = true;
             transform.Rotate(0f, 180.0f, 0f);
-        }else if (direction < 0 && isLookingForward )
+        } else if (direction < 0 && isLookingForward)
         {
             isLookingForward = false;
             transform.Rotate(0f, 180.0f, 0f);
@@ -42,16 +43,17 @@ public class Player : MonoBehaviour {
 
         if (Input.GetKeyDown("x")) //Switch between 3d and 2d
         {
-            EventManager.DimensionChange(!EventManager.Dimension);
+            if (!a.IsPlaying())
+            {
+                EventManager.DimensionChange(!EventManager.Dimension);
+            }
         }
         else if (Input.GetKeyDown("c")) //change perspective
         {
-            EventManager.PerspectiveChange(!EventManager.Perspective);
-        }
-        else if (Input.GetKeyDown("p"))
-        {
-            //For Debug
-            EventManager.SquishDimension(0.1f);
+            if (!a.IsPlaying())
+            {
+                EventManager.PerspectiveChange(!EventManager.Perspective);
+            }
         }
         else if (Input.GetKeyDown("space")) //jump
         {

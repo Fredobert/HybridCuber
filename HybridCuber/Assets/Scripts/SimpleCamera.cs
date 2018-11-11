@@ -24,14 +24,14 @@ public class SimpleCamera : MonoBehaviour {
     public void RotateCamera(bool horizontal)
     {
         this.horizontal = horizontal;
-        if (horizontal)
+        /*if (horizontal)
         {
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
         else
         {
             transform.eulerAngles = new Vector3(0, 90, 0);
-        }
+        }*/
     }
 
 
