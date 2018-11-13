@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
@@ -15,7 +16,8 @@ public class Player : MonoBehaviour {
     [SerializeField] private Transform groundPoint;         // point at the botton of the character
     [SerializeField] private LayerMask whatIsGround;        // determine what is "ground"
     private float groundRadius = 0.25f;                     // area around groundPoint, to check collision with objects
-    private bool doubleJump = false;  
+    private bool doubleJump = false;
+    public Text dimensionText;
 
     void Start () {
         ch.SwitchCamera(true);
@@ -37,6 +39,10 @@ public class Player : MonoBehaviour {
             if (!a.IsPlaying())
             {
                 EventManager.DimensionChange(!EventManager.Dimension);
+                if (EventManager.Dimension)
+                    dimensionText.text = "X = Switch to 2D";
+                else
+                    dimensionText.text = "X = Switch to 3D";
             }
         }
         else if (Input.GetKeyDown("c")) //change perspective
@@ -54,6 +60,7 @@ public class Player : MonoBehaviour {
                     doubleJump = false;
                 else
                     doubleJump = true;
+                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
                 rb.AddForce(Vector3.up * jump, ForceMode.Impulse);
             }
         }

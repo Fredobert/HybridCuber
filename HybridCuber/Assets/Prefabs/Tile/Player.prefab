@@ -124,11 +124,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f251f3a13488140824e95a987a959d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xModus: 1
   jump: 10
   isGrounded: 0
   isLookingForward: 1
   nearestTile: {fileID: 0}
   rb: {fileID: 0}
-  camX: {fileID: 0}
-  camZ: {fileID: 0}
+  ch: {fileID: 0}
+  a: {fileID: 0}
+  movementSpeed: 7
+  groundPoint: {fileID: 0}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 0
