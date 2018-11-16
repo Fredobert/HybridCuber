@@ -34,6 +34,9 @@ public class SimpleCamera : MonoBehaviour {
         }*/
     }
 
-
+    private void OnDestroy()
+    {
+        EventManager.OnPerspectiveChange -= RotateCamera;
+    }
 
 }

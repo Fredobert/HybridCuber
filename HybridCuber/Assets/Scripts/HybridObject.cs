@@ -6,10 +6,7 @@ public class HybridObject : MonoBehaviour {
 
     public Vector3 pos3d;
 
-
-	// Use this for initialization
 	void Start () {
-        //EventManager.OnDimensionChange += DimensionChange;
         EventManager.OnSquishDimension += Squish;
         UpdatePos();
     }
@@ -46,4 +43,8 @@ public class HybridObject : MonoBehaviour {
         }
     }
 
+    private void OnDestroy()
+    {
+        EventManager.OnSquishDimension -= Squish;
+    }
 }

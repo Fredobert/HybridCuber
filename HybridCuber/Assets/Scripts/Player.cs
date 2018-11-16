@@ -1,138 +1,145 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class Player : MonoBehaviour {
 
-    public float jump = 4.5f;
-    public bool isGrounded = false;
-    public bool isLookingForward = true;
-    public Transform nearestTile;
-    public Rigidbody rb;
-    public CameraHandler ch;
-    public AnimatorHelper a;
-    public float movementSpeed = 7.0f;
-    [SerializeField] private Transform groundPoint;         // point at the botton of the character
-    [SerializeField] private LayerMask whatIsGround;        // determine what is "ground"
-    private float groundRadius = 0.25f;                     // area around groundPoint, to check collision with objects
-    private bool doubleJump = false;
-    public Text dimensionText;
+    public Game game;
+    public CharacterController cc;
+
+    public float jumpPower = 4;
+    public float movementSpeed = 4.0f;
+    public int maxJumps = 2;
+
+    //public for debug reasons
+    public Transform nearestTile;  
+    public int currentJumps = 0;
+
+
+    bool isLookingForward = true;
+    bool jump = true;
+    float movement;
+    Vector3 gravity = new Vector3();
+    Vector3 move = new Vector3();
 
     void Start () {
-        ch.SwitchCamera(true);
         EventManager.OnPerspectiveChange += ChangePerspective;
     }
 
+    private void Update()
+    {
+        CheckOutOfWorld();
 
-    void Update() {
-        //Move
-        float direction = Input.GetAxis("Horizontal");
-        if (EventManager.Perspective)
-            rb.MovePosition(new Vector3(transform.position.x + direction * movementSpeed * Time.deltaTime, transform.position.y, transform.position.z));
-        else
-        {
-            rb.MovePosition(new Vector3(transform.position.x, transform.position.y, transform.position.z + direction * movementSpeed * Time.deltaTime * (-1.0f)));
-        }
+        SetInput();
+        DoMovement();
+    }
+
+
+    void SetInput()
+    {
+        movement = Input.GetAxis("Horizontal");
+
         if (Input.GetKeyDown("x")) //Switch between 3d and 2d
         {
-            if (!a.IsPlaying())
-            {
-                EventManager.DimensionChange(!EventManager.Dimension);
-                if (EventManager.Dimension)
-                    dimensionText.text = "X = Switch to 2D";
-                else
-                    dimensionText.text = "X = Switch to 3D";
-            }
+            game.SwitchDimension();
         }
         else if (Input.GetKeyDown("c")) //change perspective
         {
-            if (!a.IsPlaying())
-            {
-                EventManager.PerspectiveChange(!EventManager.Perspective);
-            }
+            game.SwitchPerspective();
         }
         else if (Input.GetKeyDown("space")) //jump
         {
-            if (IsOnGround() || doubleJump)
-            {
-                if (!IsOnGround())
-                    doubleJump = false;
-                else
-                    doubleJump = true;
-                rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
-                rb.AddForce(Vector3.up * jump, ForceMode.Impulse);
-            }
+            jump = true;
         }
-        if (rb.velocity.y < 0)
+    }
+
+    void DoMovement()
+    {
+        //Rotate Player if walking in opposite direction
+        if (movement > 0 && !isLookingForward)
         {
-            rb.velocity += Vector3.up * Time.deltaTime * (-5.0f);                                                    //-5 as a test value, alternativ: Physics.gravity.y (equals -9.81)
+            transform.Rotate(0, 180, 0);
+            isLookingForward = true;
         }
-        playerDeath();
-    }
-
-    private bool IsOnGround()
-    {
-            Collider[] colliders = Physics.OverlapSphere(groundPoint.position, groundRadius, whatIsGround);          //effizienter: colliders.length > 1 && colliders[i].gameObject != gameObject
-            
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                if (colliders[i].gameObject != gameObject)                                                           //check if colliders game Object is different from the player
-                {
-                    return true;
-                }
-            }
-        return false;
-    }
-    private void playerDeath ()     // if the Player is below a fixed Y value, he respawns
-    {
-        if (transform.position.y < -5)
+        else if (movement < 0 && isLookingForward)
         {
-            rb.MovePosition(new Vector3(0, 5.0f, 0));
-            rb.velocity.Set(0, 0, 0);
+            transform.Rotate(0, 180, 0);
+            isLookingForward = false;
         }
+        move = transform.forward * Mathf.Abs(movement) * movementSpeed;
+
+        if (!cc.isGrounded)
+        {
+            //if not on Ground move towards Ground
+            gravity += Physics.gravity * Time.deltaTime;
+        }
+        else
+        {
+            gravity = Vector3.zero;
+            currentJumps = 0;
+        }
+        if (jump)
+        {
+            if (cc.isGrounded || currentJumps < maxJumps)
+            {
+                currentJumps++;
+                gravity = Vector3.zero;
+                gravity.y = jumpPower;
+            }
+            jump = false;
+        }
+
+        cc.Move((move + gravity) * Time.deltaTime);
     }
 
 
-    private void OnCollisionStay(Collision collision)
+    void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        isGrounded = true;
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (transform.position.y < collision.gameObject.transform.position.y)
+        Transform collision = hit.collider.gameObject.transform;
+        // if colliding with wall skip
+        if (transform.position.y < collision.position.y)
         {
             return;
         }
-        if (nearestTile == null)
+        nearestTile = collision;
+        HybridObject ho = collision.GetComponent<HybridObject>();
+        Vector3 pos3d;
+        if (ho != null)
         {
-            nearestTile = collision.gameObject.transform;
-            return;
+            pos3d = ho.pos3d;
         }
-
-        float oldD = Vector3.Distance(transform.position, nearestTile.position);
-        float newD = Vector3.Distance(transform.position, collision.gameObject.transform.position);
-        if (oldD > newD)
+        else
         {
-            nearestTile = collision.gameObject.transform;
-            HybridObject ho = collision.gameObject.GetComponent<HybridObject>();
-            if (ho != null)
-            {
-                
-                Vector3 pos3d = ho.pos3d;
-                pos3d.y = transform.position.y;
-                GetComponent<HybridObject>().UpdatePos(pos3d);
-
-            }
+            pos3d = collision.transform.position;
         }
+        pos3d.y = transform.position.y;
+        GetComponent<HybridObject>().UpdatePos(pos3d);
+    }
+
+    private void CheckOutOfWorld ()     // if the Player is below a fixed Y value, he respawns
+    {
+        if (transform.position.y < game.outOfLevel)
+        {
+            Kill();
+        }
+    }
+
+
+    public void Kill()
+    {
+        gravity = Vector3.zero;
+        transform.position = game.respawnPos;
     }
 
     public void ChangePerspective(bool perspective)
     {
-
-        rb.constraints = ((perspective) ?RigidbodyConstraints.FreezePositionZ : RigidbodyConstraints.FreezePositionX) | RigidbodyConstraints.FreezeRotation;
+        //Rotate Player if perspective changed
         transform.Rotate(0, (!perspective)? 90: -90 , 0);
         transform.position = new Vector3(nearestTile.position.x, transform.position.y, transform.position.z);
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.OnPerspectiveChange -= ChangePerspective;
     }
 }

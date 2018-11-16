@@ -40,6 +40,10 @@ public class AnimatorHelper : MonoBehaviour {
     }
 
 
-
+    private void OnDestroy()
+    {
+        EventManager.OnPerspectiveChange -= PerspectiveChanged;
+        EventManager.OnDimensionChange -= DimensionChanged;
+    }
 
 }

@@ -30,4 +30,9 @@ public class CameraHandler : MonoBehaviour {
             acvtive = cam2d;
         }
     }
+
+    private void OnDestroy()
+    {
+        EventManager.OnDimensionChange -= SwitchCamera;
+    }
 }
