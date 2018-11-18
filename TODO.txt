@@ -2,24 +2,18 @@ Easy
 
 - Texture for Cubes
 - Texture for Player
-- Pause Menu
-- Interface für Steuerung
 
 Medium
 
 - Dash
-- Player Death if falling to much 
 - Player Death if inside Cubes when Switching
 - Start Menu
 
 Difficult
 
-- Animation X/Y swaping
-- 2D / 3D world
 - Sound
 - Game freezes shortly when swapping dimensions
 
 
 Bug Fixes:
 - Sometimes the character gets teleported back (swapping dimensions)
-- Double Jump doenst work properly if player velocity <0
