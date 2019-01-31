@@ -1,19 +1,15 @@
-Easy
-
-- Texture for Cubes
-- Texture for Player
+- Dark world (background), player in bright white, cubes in blue
 
 Medium
 
-- Dash
-- Player Death if inside Cubes when Switching
-- Start Menu
+- Improve jumping (shorter time in air)
+- Player Death if us switch from 3d into a 2d block / 
+- no more camera swapping in 2d
+- Start Menu -> select level
+- Sound
 
 Difficult
 
-- Sound
 - Game freezes shortly when swapping dimensions
-
-
-Bug Fixes:
-- Sometimes the character gets teleported back (swapping dimensions)
+- Spikes
+- Death animation
