@@ -2,8 +2,6 @@
 
 Walk around as a cube and solve stages by switching in-between 2D and 3D perspectives.
 
----
-
 This project was inspired by the [GameOff](https://itch.io/jam/game-off-2018) tournament. Participants had time for 1 month to create a game based on the theme "hybrid",
 which lead us to create a puzzle game being a hybrid of 2D and 3D.
 
